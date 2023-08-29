@@ -1,0 +1,14 @@
+tensorflow==2.8.0
+tensorflow-gpu==2.8.0
+torch
+matplotlib
+numpy
+plotly
+pandas
+scikit-learn
+nbformat>=4.2.0
+seaborn
+wordcloud
+tables
+h5py
+pyspark
