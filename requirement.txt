@@ -12,3 +12,10 @@ wordcloud
 tables
 h5py
 pyspark
+streamlit
+transformers
+gensim
+spellchecker
+indexer 
+nltk
+emoji
