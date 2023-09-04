@@ -6,8 +6,8 @@ from SearchEngine import *
 
 st.header("Search Engine")
 
-input_path = 'inputs\\web'
-data_path = 'outputs\\data\\amazon'
+input_path = 'inputs/data/amazon'
+data_path = 'outputs/data/amazon'
 
 # load the CSV file into a DataFrame
 df = pd.read_csv(f'{data_path}\\amazon-product-web.csv')
