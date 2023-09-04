@@ -2,7 +2,7 @@ import pickle
 import streamlit as st
 import numpy as np
 import pandas as pd
-from modules import SearchEngine
+from SearchEngine import *
 
 st.header("Search Engine")
 
