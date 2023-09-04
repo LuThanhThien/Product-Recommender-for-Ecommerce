@@ -27,10 +27,10 @@ corrected_query = searchEng.query
 word_bank = searchEng.word_bank
 
 # print(top_products)
-print('User query: ', user_query)
-print('Corrected query: ', corrected_query)
-print(word_bank)
-print(top_simlarities)
+# print('User query: ', user_query)
+# print('Corrected query: ', corrected_query)
+# print(word_bank)
+# print(top_simlarities)
 
 # website visual
 max_image_size = 150
