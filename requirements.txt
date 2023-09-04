@@ -16,6 +16,5 @@ streamlit
 transformers
 gensim
 spellchecker
-indexer 
 nltk
 emoji
