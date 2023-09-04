@@ -18,6 +18,7 @@ searchEng.fit_transform(dataFrame=df, input_path=data_path)
 top = 100
 threshold = 0.20
 user_query = st.text_input("What are you looking for?")
+user_query = user_query.lower()
 top_indices, top_simlarities = searchEng.search_query(user_query, top_number=top)
 
 # Filter the product names based on the search query
