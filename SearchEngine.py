@@ -94,7 +94,7 @@ class TFIDFSearch:
 
         # save the word bank to a text file with UTF-8 encoding
         if save:
-            with open(f'{path}\\word_bank.txt', 'w', encoding='utf-8') as file:
+            with open(f'{path}/word_bank.txt', 'w', encoding='utf-8') as file:
                 for word in self.word_bank:
                     file.write(word + '\n')
 
@@ -115,7 +115,7 @@ class TFIDFSearch:
         self.tfidf_matrix = self.tfidf_vectorizer.fit_transform(self.description_df['description'])
 
     def call_word_bank(self):
-        with open(f'{self.input_path}\\word_bank.txt', 'r', encoding='utf-8') as file:
+        with open(f'{self.input_path}/word_bank.txt', 'r', encoding='utf-8') as file:
             self.word_bank = file.read()
 
     def correct_spellings(self):
@@ -193,8 +193,8 @@ class TopProduct:
 
 
 def main():
-    input_path = 'inputs\\data\\amazon'
-    output_path = '..\\outputs\\data\\amazon'
+    input_path = 'inputs/data/amazon'
+    output_path = 'outputs/data/amazon'
     df = pd.read_csv(f'{output_path}\\amazon-product.csv')
     engine = TFIDFSearch()
     engine.preprocessing(df, path=output_path)
