@@ -18,3 +18,4 @@ gensim
 pyspellchecker
 nltk
 emoji
+contractions
