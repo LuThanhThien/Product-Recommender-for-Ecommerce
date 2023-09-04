@@ -11,7 +11,7 @@ data_path = 'outputs/data/amazon'
 
 # load the CSV file into a DataFrame
 df = pd.read_csv(f'{data_path}/amazon-product-web.csv')
-searchEng = SearchEngine.TFIDFSearch()
+searchEng = TFIDFSearch()
 searchEng.fit_transform(dataFrame=df, input_path=data_path)
 
 # Create a search box for the user to enter their search query
