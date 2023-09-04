@@ -10,7 +10,7 @@ input_path = 'inputs/data/amazon'
 data_path = 'outputs/data/amazon'
 
 # load the CSV file into a DataFrame
-df = pd.read_csv(f'{data_path}\\amazon-product-web.csv')
+df = pd.read_csv(f'{data_path}/amazon-product-web.csv')
 searchEng = SearchEngine.TFIDFSearch()
 searchEng.fit_transform(dataFrame=df, input_path=data_path)
 
