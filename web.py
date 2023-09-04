@@ -6,18 +6,19 @@ from SearchEngine import *
 
 st.header("Search Engine")
 
-input_path = 'inputs\\web'
-data_path = 'outputs\\data\\amazon'
+input_path = 'inputs/data/amazon'
+data_path = 'outputs/data/amazon'
 
 # load the CSV file into a DataFrame
-df = pd.read_csv(f'{data_path}\\amazon-product-web.csv')
-searchEng = SearchEngine.TFIDFSearch()
+df = pd.read_csv(f'{data_path}/amazon-product-web.csv')
+searchEng = TFIDFSearch()
 searchEng.fit_transform(dataFrame=df, input_path=data_path)
 
 # Create a search box for the user to enter their search query
-top = 100
-threshold = 0.20
-user_query = st.text_input("What are you looking for?")
+top = 50
+threshold = 0.10
+input_query = st.text_input("What are you looking for?")
+user_query = input_query.lower()
 top_indices, top_simlarities = searchEng.search_query(user_query, top_number=top)
 
 # Filter the product names based on the search query
@@ -26,10 +27,10 @@ corrected_query = searchEng.query
 word_bank = searchEng.word_bank
 
 # print(top_products)
-print('User query: ', user_query)
-print('Corrected query: ', corrected_query)
-print(word_bank)
-print(top_simlarities)
+# print('User query: ', user_query)
+# print('Corrected query: ', corrected_query)
+# print(word_bank)
+# print(top_simlarities)
 
 # website visual
 max_image_size = 150
