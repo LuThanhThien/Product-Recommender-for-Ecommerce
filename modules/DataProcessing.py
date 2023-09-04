@@ -199,7 +199,7 @@ class DataCleaner:
         print('Found {} duplicates'.format(cart_duplicates))
 
         if cart_duplicates > 0:
-            self.data = self.data[self.data.event_type != 'cart']
+            self.data = self.data[self.data.event_type != 'remove_from_cart']
             cart_data.drop_duplicates(subset=['product_id', 'user_id', 'user_session'], keep='first', inplace=True)
 
             # check if exist duplicates
@@ -280,9 +280,12 @@ class DataCleaner:
         self.print_end()
 
     # create product table
-    def create_product_table(self):
+    def create_product_table(self, is_return=False):
         print('CREATING PRODUCT TABLE...')
         start = time.time()
+
+        if 'relative_price' not in self.data.columns:
+            self.relative_price()
 
         # feature engineering
         print('Basic features processing...')
@@ -324,6 +327,7 @@ class DataCleaner:
                                           * ((self.product['carts']) / total_carts)
         self.product['purchase_per_cart'] = self.product['purchase_per_cart'] \
                                             * ((self.product['carts']) / total_carts)
+        self.product.fillna(0, inplace=True)
 
         # normalize rates by min-max
         rate_columns = ['cart_per_view', 'purchase_per_view', 'remove_per_cart', 'purchase_per_cart']
@@ -336,8 +340,13 @@ class DataCleaner:
         print('Create product table successfully. Finished in {0:.3f}s.'.format(end - start))
         self.print_end()
 
+        if is_return:
+            return self.product
+
     # user interaction processing
     def create_user_interaction(self):
+        if 'relative_price' not in self.data.columns:
+            self.relative_price()
         # count events
         views = self.data.loc[self.data.event_type == 'view'].groupby('user_id').event_type.count().reset_index()
         views.rename(columns={'event_type': 'views'}, inplace=True)
@@ -391,7 +400,7 @@ class DataCleaner:
         return self.merge_dataframe([sumEvent_mask, avgPrice_mask, avgRelative_mask, eventCount_mask, ], on='user_id')
 
     # create user table
-    def create_user_table(self):
+    def create_user_table(self, is_return=False):
         print('CREATING USER TABLE...')
         start = time.time()
 
@@ -419,13 +428,12 @@ class DataCleaner:
                                                       self.user['remove_from_carts'] / self.user['carts'])
         self.user['purchase_per_cart'] = 100 * np.where(self.user['carts'] == 0, self.user['purchases'],
                                                         self.user['purchases'] / self.user['carts'])
-        self.user.fillna(0, inplace=True)
 
         # by weighted mean
         total_views = self.user[['views']].sum().sum()
         total_carts = self.user[['carts']].sum().sum()
-        total_removes = self.user[['remove_from_carts']].sum().sum()
-        total_purchases = self.user[['purchases']].sum().sum()
+        # total_removes = self.user[['remove_from_carts']].sum().sum()
+        # total_purchases = self.user[['purchases']].sum().sum()
 
         # rate by weights
         self.user['cart_per_view'] = self.user['cart_per_view'] \
@@ -436,6 +444,7 @@ class DataCleaner:
                                        * ((self.user['carts']) / total_carts)
         self.user['purchase_per_cart'] = self.user['purchase_per_cart'] \
                                          * ((self.user['carts']) / total_carts)
+        self.user.fillna(0, inplace=True)
 
         # normalize rates by min-max
         rate_columns = ['cart_per_view', 'purchase_per_view', 'remove_per_cart', 'purchase_per_cart']
@@ -461,6 +470,9 @@ class DataCleaner:
         end = time.time()
         print('Create user table successfully. Finished in {0:.3f}s.'.format(end - start))
         self.print_end()
+
+        if is_return:
+            return self.user
 
     # for interaction dataset
     def calculate_recency(self):
@@ -488,7 +500,7 @@ class DataCleaner:
         return data_recency
 
     # create interaction table
-    def create_interaction_table(self):
+    def create_interaction_table(self, is_return=False):
         print('CREATE USER-PRODUCT INTERACTION TABLE...')
         start = time.time()
 
@@ -532,7 +544,10 @@ class DataCleaner:
         print('Create interaction table successfully. Finished in {0:.3f}s.'.format(end - start))
         self.print_end()
 
-    def create_train_table(self):
+        if is_return:
+            return self.interaction
+
+    def create_train_table(self, is_return=False):
         print('CREATE TRAINING TABLE...')
         start = time.time()
         self.feature = self.merge_dataframe([self.interaction, self.user], on='user_id', suffixes=('', '_user'))
@@ -545,6 +560,9 @@ class DataCleaner:
         print('Create training table successfully. Finished in {0:.3f}s.'.format(end - start))
         self.print_end()
 
+        if is_return:
+            return self.feature
+
     def CleanData(self, save=False, name='data_clean', save_path='clean-data'):
         print('CLEANING DATA PROCESSING...')
         time.sleep(3)
@@ -553,20 +571,20 @@ class DataCleaner:
         self.drop_neg_price()
         self.split_category_code()
         self.fill_brand()
-        self.drop_cart_duplicates()
         self.drop_remove_cart_duplicates()
+        self.drop_cart_duplicates()
         self.split_datetime()
         end = time.time()
 
         if save:
             print(f"Saving to '{save_path}\\{name}.csv'...")
-            self.data.to_csv(f'{save_path}\\{name}.csv')
+            self.data.to_csv(f'{save_path}\\{name}.csv', index=False)
 
         print('Clean data successfully.\nFinished in {0:.3f}s.'.format(end - start))
         self.print_end()
         return self.data
 
-    def FeatureEngineering(self, save=False, name='data_train', save_path='clean-data'):
+    def FeatureEngineering(self, return_merge=True, save=False, name='data_train', save_path='clean-data'):
         if 'date' not in self.data.columns:
             raise AttributeError('''Raw data has not cleaned! You have to call CleanData() for cleaning first.''')
 
@@ -574,7 +592,8 @@ class DataCleaner:
         time.sleep(3)
         start = time.time()
 
-        self.relative_price()
+        if 'relative_price' not in self.data.columns:
+            self.relative_price()
         self.create_product_table()
         self.create_user_table()
         self.create_interaction_table()
@@ -583,10 +602,14 @@ class DataCleaner:
 
         if save:
             print(f"Saving to '{save_path}\\{name}.csv'...")
-            self.feature.to_csv(f'{save_path}\\{name}.csv')
+            self.feature.to_csv(f'{save_path}\\{name}.csv', index=False)
         print('Extract features successfully.\nFinished in {0:.3f}s.'.format(end - start))
         self.print_end()
-        return self.product, self.user, self.interaction, self.feature
+
+        if return_merge:
+            return self.feature
+        else:
+            return self.user, self.product, self.interaction
 
 
 def main():
