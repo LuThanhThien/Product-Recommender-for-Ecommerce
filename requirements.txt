@@ -15,6 +15,6 @@ pyspark
 streamlit
 transformers
 gensim
-spellchecker
+pyspellchecker
 nltk
 emoji
