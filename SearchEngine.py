@@ -78,7 +78,7 @@ class TFIDFSearch:
         self.description_df['product_id'] = self.df['product_id']
         new_df = self.merge_dataframe([self.df, self.description_df], on='product_id')
         if save:
-            new_df.to_csv(f'{path}\\amazon-product-web.csv', index=False)
+            new_df.to_csv(f'{path}/amazon-product-web.csv', index=False)
 
     def create_word_bank(self, save=False, path=''):
         # initialize NLTK's tokenizer
