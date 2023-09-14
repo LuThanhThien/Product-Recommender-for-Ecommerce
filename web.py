@@ -58,7 +58,7 @@ if top_indices and user_query != "" and len(top_products) > 0:
         st.markdown(f"*Search for \"{corrected_query}\" instead of \"{user_query}\".*")
 
     if len(top_products) < int(0.2*top):
-        st.markdown(f"***Note:*** *The results may be less accurate for \"{corrected_query}\".*")
+        st.markdown(f"*The results may be less accurate for \"{corrected_query}\".*")
     else:
         st.write("Matching Products:")
 
