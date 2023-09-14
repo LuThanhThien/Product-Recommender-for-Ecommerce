@@ -53,16 +53,17 @@ custom_css = f"""
 
 # display products
 if top_indices and user_query != "" and len(top_products) > 0:
+
     if user_query != corrected_query:
         st.markdown(f"*Search for \"{corrected_query}\" instead of \"{user_query}\".*")
 
     if len(top_products) < int(0.2*top):
         st.markdown(f"***Note:*** *The results may be less accurate for \"{corrected_query}\".*")
     else:
-        # st.write("Matching Products:")
+        st.write("Matching Products:")
 
-        # Add custom CSS for styling
-        custom_css = f"""
+    # Add custom CSS for styling
+    custom_css = f"""
                 <style>
                 .product-container {{
                     display: flex;
