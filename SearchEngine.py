@@ -1,13 +1,13 @@
+import re
+import string
+import contractions
+import emoji
 import numpy as np
 import pandas as pd
+from nltk.tokenize import word_tokenize
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 from spellchecker import SpellChecker
-import nltk
-from nltk.tokenize import word_tokenize
-import emoji, contractions
-import string
-import re
 
 
 class TFIDFSearch:
